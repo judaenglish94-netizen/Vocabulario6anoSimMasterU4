@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulado de Vocabulário de Inglês</title>
+  <style>
+    /* Reset & Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #002147;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #000;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* Scrollbar Estilizada */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 5px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #dc2626;
+      border-radius: 5px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #b91c1c;
+    }
+
+    /* Header e Navegação */
+    header {
+      width: 100%;
+      max-width: 850px;
+      margin-bottom: 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logo {
+      max-width: 180px;
+      height: auto;
+      margin-bottom: 15px;
+      display: block;
+      border: 3px solid #dc2626;
+      border-radius: 10px;
+      background-color: #001026;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    h1 {
+      color: #ffffff;
+      margin-bottom: 15px;
+      font-size: 1.8rem;
+    }
+
+    .nav-grid {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      border: 2px solid #ffffff;
+      background-color: #001530;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background-color: #003366;
+    }
+
+    .nav-btn.active {
+      border-color: #f59e0b;
+      box-shadow: 0 0 8px #f59e0b;
+    }
+
+    .nav-btn.correct {
+      background-color: #16a34a !important;
+      border-color: #16a34a !important;
+      color: #fff;
+    }
+
+    .nav-btn.incorrect {
+      background-color: #dc2626 !important;
+      border-color: #dc2626 !important;
+      color: #fff;
+    }
+
+    /* Container Principal */
+    .container {
+      background-color: #ffffff;
+      border: 3px solid #dc2626;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 850px;
+      padding: 30px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
+
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 10px;
+    }
+
+    .question-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #000;
+    }
+
+    .topic-badge {
+      background-color: #dc2626;
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 12px;
+      text-transform: uppercase;
+    }
+
+    /* Enunciado */
+    .statement {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      color: #000;
+      font-weight: 500;
+    }
+
+    /* Opções de Resposta */
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .option-item {
+      display: flex;
+      align-items: flex-start;
+      padding: 12px 15px;
+      border: 2px solid #cbd5e1;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s, border-color 0.2s;
+      background-color: #fff;
+    }
+
+    .option-item:hover {
+      background-color: #f1f5f9;
+      border-color: #94a3b8;
+    }
+
+    .option-item input[type="radio"] {
+      margin-top: 4px;
+      margin-right: 12px;
+      cursor: pointer;
+    }
+
+    .option-text {
+      font-size: 1rem;
+      color: #000;
+      line-height: 1.4;
+    }
+
+    .option-item.selected {
+      border-color: #dc2626;
+      background-color: #fef2f2;
+    }
+
+    .option-item.correct-bg {
+      background-color: #dcfce7 !important;
+      border-color: #16a34a !important;
+    }
+
+    .option-item.incorrect-bg {
+      background-color: #fee2e2 !important;
+      border-color: #dc2626 !important;
+    }
+
+    /* Justificativa / Feedback */
+    .feedback-box {
+      display: none;
+      background-color: #f8fafc;
+      border-left: 4px solid #0284c7;
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #000;
+    }
+
+    .feedback-box.show {
+      display: block;
+    }
+
+    .feedback-box strong {
+      color: #0284c7;
+    }
+
+    /* Botões de Ação */
+    .action-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .btn {
+      background-color: #dc2626;
+      color: #ffffff;
+      border: none;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      flex: 1;
+      max-width: 150px;
+      text-align: center;
+    }
+
+    .btn:hover {
+      background-color: #b91c1c;
+    }
+
+    .btn:disabled {
+      background-color: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .btn-finish {
+      background-color: #16a34a;
+      max-width: 200px;
+    }
+
+    .btn-finish:hover {
+      background-color: #15803d;
+    }
+
+    /* Modal de Resultado Final */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.75);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background-color: #ffffff;
+      border: 3px solid #dc2626;
+      border-radius: 10px;
+      max-width: 650px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 30px;
+      color: #000;
+    }
+
+    .modal-header {
+      text-align: center;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 10px;
+    }
+
+    .modal-header h2 {
+      color: #dc2626;
+      font-size: 1.8rem;
+    }
+
+    .score-display {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 15px;
+      color: #0f172a;
+    }
+
+    .stats-container {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+      background-color: #f8fafc;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+
+    .stat-value.correct { color: #16a34a; }
+    .stat-value.incorrect { color: #dc2626; }
+
+    .diagnostics-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #0f172a;
+    }
+
+    .diagnostics-list {
+      list-style-type: disc;
+      padding-left: 20px;
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+
+    .modal-footer {
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 15px;
+      }
+      .action-buttons {
+        flex-direction: row;
+      }
+      .btn {
+        padding: 10px 8px;
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="master.png" alt="Logo Master" class="logo">
+    <h1>Revisão de Vocabulário - Inglês</h1>
+    <div class="nav-grid" id="nav-grid">
+      <!-- Botões de 1 a 20 gerados dinamicamente -->
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="question-header">
+      <span class="question-title" id="question-title">Questão 1 de 20</span>
+      <span class="topic-badge" id="topic-badge">Tema</span>
+    </div>
+
+    <!-- Enunciado -->
+    <div class="statement" id="statement-text">
+      <!-- Conteúdo da questão carregado aqui -->
+    </div>
+
+    <!-- Opções -->
+    <div class="options-list" id="options-list">
+      <!-- Alternativas carregadas aqui -->
+    </div>
+
+    <!-- Justificativa -->
+    <div class="feedback-box" id="feedback-box">
+      <strong>Explicação:</strong> <span id="feedback-text"></span>
+    </div>
+
+    <!-- Botões de Ação -->
+    <div class="action-buttons">
+      <button class="btn" id="btn-next" onclick="nextQuestion()">Next</button>
+      <button class="btn" id="btn-check" onclick="checkAnswer()">Check</button>
+      <button class="btn" id="btn-prev" onclick="prevQuestion()">Previous</button>
+    </div>
+  </main>
+
+  <!-- Modal de Resultado Final -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Resultado do Exercício</h2>
+      </div>
+      <div class="score-display" id="score-display">
+        Sua Nota: 0,0 / 10,0
+      </div>
+      <div class="stats-container">
+        <div class="stat-item">
+          <div>Acertos</div>
+          <div class="stat-value correct" id="stat-correct">0 (0%)</div>
+        </div>
+        <div class="stat-item">
+          <div>Erros</div>
+          <div class="stat-value incorrect" id="stat-incorrect">0 (0%)</div>
+        </div>
+      </div>
+      <div class="diagnostics-title">Diagnóstico por Tópico:</div>
+      <ul class="diagnostics-list" id="diagnostics-list">
+        <!-- Diagnóstico dinâmico -->
+      </ul>
+      <div class="modal-footer">
+        <button class="btn btn-finish" onclick="restartQuiz()">Refazer Exercício</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // BASE DE DADOS COM 20 QUESTÕES OBJETIVAS PURAS DE VOCABULÁRIO (SEM TEXTO BASE)
+    const rawQuestions = [
+      // TEMA 1: SPORTS & ADJECTIVES (Capítulo 13)
+      {
+        id: 1,
+        topic: "Sports",
+        statement: "Qual das opções descreve corretamente o esporte <b>TENNIS</b>?",
+        correctKey: "A",
+        options: {
+          A: "A sport played on a court with rackets, a net, and a small yellow ball.",
+          B: "A sport where you move through water in a swimming pool using your arms.",
+          C: "An outdoor exercise where you wear running shoes and move fast on a track.",
+          D: "A sport where athletes stand on a board and ride waves in the ocean.",
+          E: "A team sport played with a heavy orange ball thrown into a high basket."
+        },
+        justification: "Tennis (tênis) é o esporte praticado em quadra com raquetes, rede e uma bola amarela pequena."
+      },
+      {
+        id: 2,
+        topic: "Sports",
+        statement: "Assinale a definição que corresponde ao esporte <b>BASKETBALL</b>:",
+        correctKey: "E",
+        options: {
+          A: "A game where you hit a small yellow ball back and forth with a racket.",
+          B: "An outdoor activity where you run long distances in a park or on streets.",
+          C: "An ocean sport where you balance standing on a surfboard over waves.",
+          D: "A water activity performed by swimming back and forth inside a pool.",
+          E: "A team game where players bounce a big ball and throw it into a high basket."
+        },
+        justification: "Basketball (basquete) é o jogo em equipe onde os jogadores quicam e arremessam a bola na cesta alta."
+      },
+      {
+        id: 3,
+        topic: "Sports",
+        statement: "Qual é a definição correta para o esporte <b>SWIMMING</b>?",
+        correctKey: "B",
+        options: {
+          A: "A fast sport played on a court using sneakers and a yellow ball.",
+          B: "A water sport where you propel your body through water in a pool or lake.",
+          C: "A game where two teams hit a ball over a high net using only their hands.",
+          D: "An activity involving bouncing and throwing a ball into a net hoop.",
+          E: "An outdoor sport where you ride ocean waves while standing on a board."
+        },
+        justification: "Swimming (natação) é o esporte aquático onde você se desloca na água usando braços e pernas."
+      },
+      {
+        id: 4,
+        topic: "Sports",
+        statement: "Assinale a opção que conceitua a atividade de <b>RUNNING</b>:",
+        correctKey: "D",
+        options: {
+          A: "Riding ocean waves using a special board while standing up.",
+          B: "Hitting a small ball over a net using wooden or metal rackets.",
+          C: "Passing a ball over a net with your hands without letting it touch the ground.",
+          D: "The physical action or exercise of moving fast on foot using running shoes.",
+          E: "Swimming in deep water wearing a cap and swimming goggles."
+        },
+        justification: "Running (corrida) é a prática física de se mover rapidamente a pé usando tênis apropriados."
+      },
+      {
+        id: 5,
+        topic: "Sports",
+        statement: "Qual das frases melhor descreve o esporte <b>VOLLEYBALL</b>?",
+        correctKey: "C",
+        options: {
+          A: "A game where you throw a heavy orange ball into a tall metal basket.",
+          B: "A sport where athletes swim fast inside a marked pool.",
+          C: "A team sport where players use their hands to hit a ball over a high net.",
+          D: "A fast running competition on a track wearing athletic clothes.",
+          E: "A game played with rackets and a small yellow felt ball."
+        },
+        justification: "Volleyball (vôlei) é o jogo em equipe no qual se usam as mãos para passar a bola sobre uma rede alta."
+      },
+      {
+        id: 6,
+        topic: "Sports",
+        statement: "Assinale a alternativa que define corretamente o esporte <b>SURF</b>:",
+        correctKey: "A",
+        options: {
+          A: "A sport where a person stands on a special board and rides ocean waves.",
+          B: "A water sport where you swim back and forth inside a swimming pool.",
+          C: "A racket sport played on a court with a yellow ball.",
+          D: "A running exercise done outdoors around a park or track.",
+          E: "A team game played by throwing a ball into a tall basket."
+        },
+        justification: "Surf é o esporte no qual a pessoa fica em pé sobre uma prancha deslizando nas ondas do mar."
+      },
+      {
+        id: 7,
+        topic: "Sports Adjectives",
+        statement: "Qual das alternativas associa corretamente o adjetivo <b>RELAXING</b> ao seu significado simples?",
+        correctKey: "D",
+        options: {
+          A: "Something that makes your body feel very tired and exhausted.",
+          B: "An activity that involves high physical risk and danger of injuries.",
+          C: "A difficult sport that tests your strength and limits.",
+          D: "An activity that helps you feel peaceful, calm, and free from stress.",
+          E: "A sport that requires extreme running speed and rapid movements."
+        },
+        justification: "Relaxing (relaxante) indica uma atividade que traz paz, calma e reduz o estresse."
+      },
+      {
+        id: 8,
+        topic: "Sports Adjectives",
+        statement: "Assinale a alternativa que define corretamente o adjetivo <b>TIRING</b>:",
+        correctKey: "B",
+        options: {
+          A: "An easy exercise that makes you feel peaceful and quiet.",
+          B: "An activity that uses a lot of energy and leaves you feeling exhausted.",
+          C: "A dangerous activity that might cause accidents.",
+          D: "Something simple that requires zero physical effort.",
+          E: "An activity that makes you feel happy and relaxed."
+        },
+        justification: "Tiring (cansativo) é qualquer atividade que consome muita energia física e deixa a pessoa exausta."
+      },
+
+      // TEMA 2: BENEFITS OF SPORTS (Capítulo 13 - Language Arena)
+      {
+        id: 9,
+        topic: "Benefits of Sports",
+        statement: "O que significa a expressão <b>REDUCE STRESS</b> no contexto da prática de esportes?",
+        correctKey: "E",
+        options: {
+          A: "To make your bones grow faster and stronger.",
+          B: "To gain body weight after eating heavy meals.",
+          C: "To stop your heart from beating fast during exercises.",
+          D: "To make your muscles feel very weak and tired.",
+          E: "To lower mental tension and make your mind feel more calm and peaceful."
+        },
+        justification: "Reduce stress (reduzir o estresse) significa diminuir a tensão mental e relaxar a mente."
+      },
+      {
+        id: 10,
+        topic: "Benefits of Sports",
+        statement: "Qual frase explica o conceito de <b>IMPROVE SELF-ESTEEM</b>?",
+        correctKey: "C",
+        options: {
+          A: "To gain weight quickly by eating healthy fruits.",
+          B: "To help your body fight cold viruses during winter.",
+          C: "To feel more confident, proud, and positive about yourself.",
+          D: "To train your body to run faster in outdoor competitions.",
+          E: "To decrease the strength of your heart muscles."
+        },
+        justification: "Improve self-esteem (melhorar a autoestima) significa sentir-se mais confiante e positivo em relação a si mesmo."
+      },
+      {
+        id: 11,
+        topic: "Benefits of Sports",
+        statement: "Assinale a alternativa que descreve o significado de <b>INCREASE RESISTANCE</b>:",
+        correctKey: "A",
+        options: {
+          A: "To build physical stamina so your body can exercise longer without getting tired easily.",
+          B: "To lower the amount of blood pumped by your heart.",
+          C: "To lie down on the sofa without making any movement.",
+          D: "To lose weight fast by skipping healthy meals.",
+          E: "To create problems between your body and spirit."
+        },
+        justification: "Increase resistance (aumentar a resistência) é desenvolver fôlego e energia física para aguentar exercícios por mais tempo."
+      },
+      {
+        id: 12,
+        topic: "Benefits of Sports",
+        statement: "A expressão <b>CARDIOVASCULAR SYSTEM</b> se refere a qual parte do corpo?",
+        correctKey: "D",
+        options: {
+          A: "The group of bones inside your arms and legs.",
+          B: "The stomach organs that digest daily food.",
+          C: "The area of the brain responsible for reading.",
+          D: "The system of the heart and blood vessels that circulates blood in the body.",
+          E: "The muscles on your feet that help you jump high."
+        },
+        justification: "Cardiovascular system é o sistema circulatório formado pelo coração e pelos vasos sanguíneos."
+      },
+
+      // TEMA 3: TRASH & RECYCLING CYCLE (Capítulo 15)
+      {
+        id: 13,
+        topic: "Trash & Recycling",
+        statement: "Qual é o uso correto de um <b>GARBAGE BAG</b> no dia a dia?",
+        correctKey: "B",
+        options: {
+          A: "A green truck that drives around collecting trash on streets.",
+          B: "A plastic container or sack used to collect and hold household waste.",
+          C: "A large outdoor place where waste is buried under dirt.",
+          D: "A person who works collecting trash from houses.",
+          E: "A big machine that burns waste to make electricity."
+        },
+        justification: "Garbage bag é o saco de lixo usado para armazenar e descartar resíduos domésticos."
+      },
+      {
+        id: 14,
+        topic: "Trash & Recycling",
+        statement: "Qual é a função do <b>GARBAGE MAN</b>?",
+        correctKey: "E",
+        options: {
+          A: "A scientist who recycles plastic bottles in laboratories.",
+          B: "A heavy tractor used to dig deep holes in landfills.",
+          C: "A small trash bin placed under kitchen sinks.",
+          D: "A machine that washes old paper to make clean new paper.",
+          E: "A worker who collects garbage bags from houses and puts them into a truck."
+        },
+        justification: "Garbage man (coletor/gari) é o trabalhador que recolhe os sacos de lixo das residências e os coloca no caminhão."
+      },
+      {
+        id: 15,
+        topic: "Trash & Recycling",
+        statement: "O que é um <b>LANDFILL</b> (aterro sanitário)?",
+        correctKey: "A",
+        options: {
+          A: "A designated area where collected trash is dumped and buried under soil.",
+          B: "A small plastic bin kept inside bedrooms or kitchens.",
+          C: "A factory where plastic and glass are transformed into new products.",
+          D: "A special furnace that burns waste at high temperatures.",
+          E: "A large truck used to transport clean water to houses."
+        },
+        justification: "Landfill (aterro sanitário) é a área preparada onde o lixo da cidade é descartado e coberto com terra."
+      },
+      {
+        id: 16,
+        topic: "Trash & Recycling",
+        statement: "Assinale a opção que conceitua um <b>RECYCLING CENTER</b>:",
+        correctKey: "C",
+        options: {
+          A: "A hole in the ground where garbage is buried forever.",
+          B: "A vehicle that picks up trash outside houses every morning.",
+          C: "A place where recyclable materials (paper, plastic, glass) are sorted and processed.",
+          D: "A big furnace that burns trash and creates smoke.",
+          E: "A small waste bin sitting next to a study desk."
+        },
+        justification: "Recycling center (centro de reciclagem) é o local onde materiais como papel, plástico e vidro são separados e reprocessados."
+      },
+      {
+        id: 17,
+        topic: "Trash & Recycling",
+        statement: "Qual é a definição de um <b>INCINERATOR</b>?",
+        correctKey: "D",
+        options: {
+          A: "A driver who operates the garbage collection truck.",
+          B: "A plastic sack used to separate clean paper from organic waste.",
+          C: "A lake created to store rain water for cities.",
+          D: "A special industrial furnace or plant designed for burning waste.",
+          E: "A recycling site where glass bottles are washed."
+        },
+        justification: "Incinerator (incinerador) é o forno/instalação industrial utilizado para queimar resíduos de lixo."
+      },
+
+      // TEMA 4: WATER RESOURCES & CONSERVATION (Capítulo 16)
+      {
+        id: 18,
+        topic: "Water Resources",
+        statement: "Assinale a alternativa que define um <b>RESERVOIR</b>:",
+        correctKey: "A",
+        options: {
+          A: "A large artificial lake built to store and supply water for a city.",
+          B: "Frozen ice that falls from clouds during cold weather.",
+          C: "A large vehicle used to carry milk or fuel to stores.",
+          D: "Rainwater collected directly from house roofs in small buckets.",
+          E: "A small natural stream of water flowing down a mountain."
+        },
+        justification: "Reservoir (reservatório) é um lago artificial gigante construído para armazenar água que abastece as cidades."
+      },
+      {
+        id: 19,
+        topic: "Water Resources",
+        statement: "O que significa o termo <b>MELTED SNOW</b>?",
+        correctKey: "E",
+        options: {
+          A: "Rainwater stored inside underground concrete tanks.",
+          B: "Dirty water flowing out of industrial factories.",
+          C: "Water delivered by big trucks during dry summers.",
+          D: "Water collected from rivers using electric pumps.",
+          E: "Snow or ice that turns into liquid water when the temperature rises."
+        },
+        justification: "Melted snow (neve derretida) é a neve/gelo que se transforma em água líquida quando a temperatura aumenta."
+      },
+      {
+        id: 20,
+        topic: "Water Resources",
+        statement: "Assinale a definição correta para <b>TANK TRUCK</b> (caminhão-pipa):",
+        correctKey: "B",
+        options: {
+          A: "A vehicle used for burning household trash in city streets.",
+          B: "A heavy truck equipped with a large tank to carry and deliver water.",
+          C: "An artificial lake built to catch rain during storm seasons.",
+          D: "A clean river that flows through small country towns.",
+          E: "A machine used to clear snow and ice off mountain roads."
+        },
+        justification: "Tank truck (caminhão-pipa) é o caminhão pesado com reservatório próprio usado para carregar e distribuir água."
+      }
+    ];
+
+    // ESTADO DA APLICAÇÃO E EMBARALHAMENTO DO GABARITO (Fisher-Yates)
+    let processedQuestions = [];
+    let userAnswers = {};
+    let checkedQuestions = {};
+    let currentQuestionIndex = 0;
+
+    function shuffleArray(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function initQuizData() {
+      processedQuestions = rawQuestions.map((q) => {
+        const originalKeys = ['A', 'B', 'C', 'D', 'E'];
+        const optionsList = originalKeys.map(key => ({
+          originalKey: key,
+          text: q.options[key]
+        }));
+
+        const shuffledOptions = shuffleArray(optionsList);
+
+        const newLetterLabels = ['A', 'B', 'C', 'D', 'E'];
+        let mappedCorrectLetter = '';
+
+        const finalOptions = shuffledOptions.map((opt, index) => {
+          const currentLabel = newLetterLabels[index];
+          if (opt.originalKey === q.correctKey) {
+            mappedCorrectLetter = currentLabel;
+          }
+          return {
+            label: currentLabel,
+            text: opt.text,
+            originalKey: opt.originalKey
+          };
+        });
+
+        return {
+          ...q,
+          displayOptions: finalOptions,
+          correctDisplayLetter: mappedCorrectLetter
+        };
+      });
+    }
+
+    function buildNavGrid() {
+      const navGrid = document.getElementById('nav-grid');
+      navGrid.innerHTML = '';
+      for (let i = 0; i < processedQuestions.length; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'nav-btn';
+        btn.id = `nav-btn-${i}`;
+        btn.innerText = i + 1;
+        btn.onclick = () => jumpToQuestion(i);
+        navGrid.appendChild(btn);
+      }
+      updateNavStatus();
+    }
+
+    function updateNavStatus() {
+      for (let i = 0; i < processedQuestions.length; i++) {
+        const btn = document.getElementById(`nav-btn-${i}`);
+        if (!btn) continue;
+        btn.classList.remove('active', 'correct', 'incorrect');
+
+        if (i === currentQuestionIndex) {
+          btn.classList.add('active');
+        }
+
+        if (checkedQuestions[i]) {
+          const isCorrect = userAnswers[i] === processedQuestions[i].correctDisplayLetter;
+          if (isCorrect) {
+            btn.classList.add('correct');
+          } else {
+            btn.classList.add('incorrect');
+          }
+        }
+      }
+    }
+
+    function renderQuestion(index) {
+      const q = processedQuestions[index];
+
+      document.getElementById('question-title').innerText = `Questão ${index + 1} de 20`;
+      document.getElementById('topic-badge').innerText = q.topic;
+      document.getElementById('statement-text').innerHTML = q.statement;
+
+      const optionsContainer = document.getElementById('options-list');
+      optionsContainer.innerHTML = '';
+
+      const isChecked = checkedQuestions[index];
+
+      q.displayOptions.forEach((opt) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'option-item';
+
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = `option-${index}`;
+        radio.value = opt.label;
+        radio.id = `opt-${opt.label}`;
+        radio.disabled = !!isChecked;
+
+        if (userAnswers[index] === opt.label) {
+          radio.checked = true;
+          itemDiv.classList.add('selected');
+        }
+
+        if (isChecked) {
+          if (opt.label === q.correctDisplayLetter) {
+            itemDiv.classList.add('correct-bg');
+          } else if (userAnswers[index] === opt.label) {
+            itemDiv.classList.add('incorrect-bg');
+          }
+        } else {
+          itemDiv.onclick = () => selectOption(index, opt.label);
+        }
+
+        const labelSpan = document.createElement('span');
+        labelSpan.className = 'option-text';
+        labelSpan.innerHTML = `<strong>${opt.label})</strong> ${opt.text}`;
+
+        itemDiv.appendChild(radio);
+        itemDiv.appendChild(labelSpan);
+        optionsContainer.appendChild(itemDiv);
+      });
+
+      const feedbackBox = document.getElementById('feedback-box');
+      const feedbackText = document.getElementById('feedback-text');
+      if (isChecked) {
+        let textJust = q.justification;
+        textJust = textJust.replace(/Resposta correta: [A-E]\./, `Resposta correta: ${q.correctDisplayLetter}.`);
+        feedbackText.innerText = textJust;
+        feedbackBox.classList.add('show');
+      } else {
+        feedbackBox.classList.remove('show');
+      }
+
+      const btnCheck = document.getElementById('btn-check');
+      btnCheck.disabled = !userAnswers[index] || isChecked;
+
+      const btnNext = document.getElementById('btn-next');
+      if (index === processedQuestions.length - 1) {
+        btnNext.innerText = 'Finish';
+        btnNext.classList.add('btn-finish');
+      } else {
+        btnNext.innerText = 'Next';
+        btnNext.classList.remove('btn-finish');
+      }
+
+      const btnPrev = document.getElementById('btn-prev');
+      btnPrev.disabled = index === 0;
+
+      updateNavStatus();
+    }
+
+    function selectOption(qIndex, label) {
+      if (checkedQuestions[qIndex]) return;
+      userAnswers[qIndex] = label;
+
+      const items = document.querySelectorAll('.option-item');
+      items.forEach(item => item.classList.remove('selected'));
+
+      const radio = document.getElementById(`opt-${label}`);
+      if (radio) {
+        radio.checked = true;
+        radio.closest('.option-item').classList.add('selected');
+      }
+
+      document.getElementById('btn-check').disabled = false;
+    }
+
+    function checkAnswer() {
+      if (!userAnswers[currentQuestionIndex]) return;
+      checkedQuestions[currentQuestionIndex] = true;
+      renderQuestion(currentQuestionIndex);
+    }
+
+    function jumpToQuestion(index) {
+      currentQuestionIndex = index;
+      renderQuestion(currentQuestionIndex);
+    }
+
+    function nextQuestion() {
+      if (currentQuestionIndex < processedQuestions.length - 1) {
+        currentQuestionIndex++;
+        renderQuestion(currentQuestionIndex);
+      } else {
+        finishQuiz();
+      }
+    }
+
+    function prevQuestion() {
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        renderQuestion(currentQuestionIndex);
+      }
+    }
+
+    function finishQuiz() {
+      let totalCorrect = 0;
+      let topicErrors = {};
+      let topicTotals = {};
+
+      processedQuestions.forEach((q, idx) => {
+        const topic = q.topic;
+        if (!topicTotals[topic]) {
+          topicTotals[topic] = 0;
+          topicErrors[topic] = 0;
+        }
+        topicTotals[topic]++;
+
+        const userAns = userAnswers[idx];
+        if (userAns === q.correctDisplayLetter) {
+          totalCorrect++;
+        } else {
+          topicErrors[topic]++;
+        }
+      });
+
+      const totalQuestions = processedQuestions.length;
+      const totalIncorrect = totalQuestions - totalCorrect;
+      
+      // Nota final valendo 10,0 (cada questão equivale a 0,5 ponto)
+      const score = (totalCorrect * 0.5).toFixed(1);
+
+      const correctPct = Math.round((totalCorrect / totalQuestions) * 100);
+      const incorrectPct = Math.round((totalIncorrect / totalQuestions) * 100);
+
+      document.getElementById('score-display').innerText = `Sua Nota: ${score.replace('.', ',')} / 10,0`;
+      document.getElementById('stat-correct').innerText = `${totalCorrect} (${correctPct}%)`;
+      document.getElementById('stat-incorrect').innerText = `${totalIncorrect} (${incorrectPct}%)`;
+
+      const diagnosticsList = document.getElementById('diagnostics-list');
+      diagnosticsList.innerHTML = '';
+
+      let needsRevision = false;
+
+      for (const topic in topicTotals) {
+        const errors = topicErrors[topic];
+        const total = topicTotals[topic];
+        const errorPct = (errors / total) * 100;
+
+        if (errorPct > 25) {
+          needsRevision = true;
+          const li = document.createElement('li');
+          let recommendationText = `<strong>${topic}:</strong> Recomenda-se reforçar a leitura e fixação do vocabulário deste tema (Erro: ${Math.round(errorPct)}%).`;
+          li.innerHTML = recommendationText;
+          diagnosticsList.appendChild(li);
+        }
+      }
+
+      if (!needsRevision) {
+        const li = document.createElement('li');
+        li.innerHTML = "<strong>Parabéns!</strong> Você acertou praticamente todas as questões. Seu vocabulário está afiado para a prova!";
+        diagnosticsList.appendChild(li);
+      }
+
+      document.getElementById('modal-overlay').style.display = 'flex';
+    }
+
+    function restartQuiz() {
+      userAnswers = {};
+      checkedQuestions = {};
+      currentQuestionIndex = 0;
+      document.getElementById('modal-overlay').style.display = 'none';
+      initQuizData();
+      buildNavGrid();
+      renderQuestion(0);
+    }
+
+    window.onload = function() {
+      initQuizData();
+      buildNavGrid();
+      renderQuestion(0);
+    };
+  </script>
+</body>
+</html>
